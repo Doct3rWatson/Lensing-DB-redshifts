@@ -1,12 +1,12 @@
 # interactive_lenses_exact.py
-# Output: lens_interactive.html (embed directly or via <iframe>).
 # Requires: pip install bokeh pandas numpy
 
 import pandas as pd
 import numpy as np
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 from datetime import datetime
 import subprocess, os
+from html import unescape
 
 from bokeh.plotting import figure, output_file, save
 from bokeh.models import (
@@ -169,8 +169,30 @@ df["year"] = df["year"].astype(int)
 
 if "paper" not in df.columns:
     raise ValueError("DataFrame needs a 'paper' column to make clickable points.")
-ads_base = "https://ui.adsabs.harvard.edu/abs/"
-df["ads_url"] = ads_base + df["paper"].astype(str).map(lambda s: quote(s, safe="")) + "/abstract"
+ADS_BASE = "https://ui.adsabs.harvard.edu/abs/"
+def normalize_bibcode(bib):
+    if pd.isna(bib):
+        return None
+    s = str(bib).strip()
+    # Convert HTML / LaTeX forms to raw text
+    s = unescape(s).replace(r"\&", "&")
+    # Collapse any existing percent-encoding (handles %26, %2526, etc.)
+    for _ in range(3):
+        new_s = unquote(s)
+        if new_s == s:
+            break
+        s = new_s
+    return s
+
+def bibcode_to_ads_url(bib):
+    s = normalize_bibcode(bib)
+    if s is None:
+        return None
+    # Encode as a path segment but KEEP existing % so we don't re-encode %26 -> %2526
+    path = quote(s, safe="%")
+    return f"{ADS_BASE}{path}/abstract"
+
+df["ads_url"] = df["paper"].apply(bibcode_to_ads_url) #ads_base + df["paper"].astype(str).map(lambda s: quote(s, safe="")) + "/abstract"
 
 min_year = max(1979, int(df["year"].min()))
 max_year = max(2025, int(df["year"].max()))
