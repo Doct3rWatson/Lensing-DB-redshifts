@@ -742,9 +742,10 @@ layout = column(row(left_stack, legs), footer)
 
 
 datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
-# latest_fn = "index.html"
+latest_fn = "index.html"
 versioned_fn = f"index_{datestamp}.html"
 
+save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
 save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
 
 html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
@@ -755,8 +756,8 @@ html = html.replace(
     "</head>"
 )
 
-# with open("index.html", "w", encoding="utf-8") as f:
-#     f.write(html)
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html)
 with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
     f.write(html)
 # print("Wrote .html")
