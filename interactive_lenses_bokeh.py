@@ -260,9 +260,9 @@ year_marker_tick = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
 
 histo_heights = 140
-histo_widths = 740
-mainax_height = 500
-mainax_width = 740
+histo_widths = 650
+mainax_height = 400
+mainax_width = 640
 
 
 # Top panel: normalized cumulative stacked bars (N_frac_total)
@@ -281,7 +281,7 @@ p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
 p_top.yaxis.axis_label_text_font_size = '2.0em'
 p_top.xaxis.axis_label_text_font_size = '1.5em'
-p_top.title.text_font_size='1.25em'
+p_top.title.text_font_size='1.2em'
 
 
 
@@ -301,7 +301,7 @@ p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
 p_mid.yaxis.axis_label_text_font_size = '2.0em'
 p_mid.xaxis.axis_label_text_font_size = '1.5em'
-p_mid.title.text_font_size='1.25em'
+p_mid.title.text_font_size='1.2em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
 p = figure(
@@ -315,7 +315,7 @@ p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
 p.yaxis.axis_label = r"$$z_{\text{source}}$$"
 p.yaxis.axis_label_text_font_size = '2.5em'
 p.xaxis.axis_label_text_font_size = '2.5em'
-p.title.text_font_size='2em'
+p.title.text_font_size='15pt'
 FW = int(p.frame_width)        # one source of truth for inner width
 LEFT = int(p.min_border_left)    # one source of truth for left indent
 
@@ -461,7 +461,7 @@ label_mid_total = Label(
     x=MID_PAD, y=p_mid.frame_height - MID_PAD + 10,
     x_units="screen", y_units="screen",
     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
-    text_font_size="16pt",
+    text_font_size="14pt",
     text_align="left", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
@@ -473,8 +473,6 @@ hist_legend_div = Div(width=360, margin=(0,0,10,0),
 legend_div = Div(width=360)
 
 
-
-
 def initial_counts_html(cur_year: int) -> str:
     sub = df.loc[df["year"] <= cur_year]
 
@@ -484,11 +482,11 @@ def initial_counts_html(cur_year: int) -> str:
         n = int((sub["survey"] == k).sum())
         col = COLOR_MAP[k]
         parts.append(
-            rf"<div style='font-size:12pt;'><span style='display:inline-block;width:14px;height:14px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
+            rf"<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
         )
     n_others = int((~sub["survey"].isin(list(COLOR_MAP.keys())[:-1])).sum())
     parts.append(
-        "<div style='font-size:12pt;'><span style='display:inline-block;width:14px;height:14px;"
+        "<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;"
         "background:gray;margin-right:8px;'></span>"
         rf"$$\text{{Other surveys, N}} ={n_others}$$</div>"
     )
@@ -507,7 +505,7 @@ def initial_counts_html(cur_year: int) -> str:
     )
 
     return (
-        "<div style='font-size:16pt'><b>Surveys</b></div>"
+        "<div style='font-size:14pt'><b>Surveys</b></div>"
         + "".join(parts)
         + marker_key_html
     )
@@ -539,7 +537,7 @@ tick_fig.outline_line_color = None
 tick_fig.xaxis.ticker = FixedTicker(ticks=tick_years, minor_ticks=YEARS)
 tick_fig.xaxis.major_label_orientation = 45
 tick_fig.xaxis.major_label_overrides = {y: rf"$${y}$$" for y in tick_years}
-tick_fig.xaxis.major_label_text_font_size = "16pt"
+tick_fig.xaxis.major_label_text_font_size = "11pt"
 tick_fig.add_layout(year_marker_tick)
 
 style_ticks(p_top,  label_size="12pt", major_len=8,  minor_len=4, line_width=1.2)
@@ -634,18 +632,18 @@ callback = CustomJS(
     }
     // Explicit order like your legend:
     const order = ['CLASS','SLACS','BELLS','SL2S','CASSOWARY','AGEL','Serendipitous'];
-    let html = "<div style='font-size:16pt'><b>Surveys</b></div>";
+    let html = "<div style='font-size:12pt'><b>Surveys</b></div>";
     for (const k of order) {
         const c = counts[k] || 0;
         const col = color_map[k];
-        html += String.raw`<div style='font-size:12pt;'><span style='display:inline-block;width:14px;height:14px;background:${col};margin-right:8px;'></span>$$\text{${k}, N} = ${c}$$</div>`;
+        html += String.raw`<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:${col};margin-right:8px;'></span>$$\text{${k}, N} = ${c}$$</div>`;
 }
     // Others
     let others = 0;
     for (const k in counts) {
         if (!order.includes(k)) others += counts[k];
     }
-    html += String.raw`<div style='font-size:12pt;'><span style='display:inline-block;width:14px;height:14px;background:gray;margin-right:8px;'></span>$$\text{Other surveys, N} = ${others}$$</div>`;
+    html += String.raw`<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:gray;margin-right:8px;'></span>$$\text{Other surveys, N} = ${others}$$</div>`;
     legend_div.text = html + marker_key_html;
     if (year_span_top) year_span_top.location = yr;
     if (year_span_mid) year_span_mid.location = yr;
