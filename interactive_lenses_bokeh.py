@@ -260,9 +260,9 @@ year_marker_tick = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
 
 histo_heights = 140
-histo_widths = 840
-mainax_height = 600
-mainax_width = 840
+histo_widths = 740
+mainax_height = 500
+mainax_width = 740
 
 
 # Top panel: normalized cumulative stacked bars (N_frac_total)
