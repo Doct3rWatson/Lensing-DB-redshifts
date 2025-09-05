@@ -277,7 +277,6 @@ mainax_width = 640
 p_top = figure(frame_height=histo_heights, frame_width=histo_widths, 
                tools="pan,xwheel_zoom,box_zoom,reset,save",
                toolbar_location=None)
-
 # p_top = figure(height=histo_heights, sizing_mode="stretch_width", 
 #                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_top.title.text = r"$$\text{Cumulative fractional total of source types}$$"
@@ -847,15 +846,43 @@ save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Inter
 save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
 # save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=CDN)
 
-# html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
-# html = html.replace(
-#     "</head>",
-#     f'<meta name="author" content="Courtney B. Watson">\n'
-#     f'<meta name="copyright" content="© {COPY_YEAR} Courtney B. Watson | AGEL Team">\n'
-#     "</head>"
-# )
+html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
+html = html.replace(
+    "</head>",
+    f'<meta name="author" content="Courtney B. Watson">\n'
+    f'<meta name="copyright" content="© {COPY_YEAR} Courtney B. Watson | AGEL Team">\n'
+    "</head>"
+)
 
-# with open("index.html", "w", encoding="utf-8") as f:
-#     f.write(html)
-# with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
-#     f.write(html)
+TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{ bokeh_css }}
+  {{ bokeh_js }}
+  <style>
+    body { margin: 0; }
+    .page { max-width: 1200px; margin: 0 auto; padding: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    {{ plot_div|safe }}
+  </div>
+  {{ plot_script|safe }}
+</body>
+</html>
+"""
+
+html = file_html(layout, INLINE, title="Lenses", template=TEMPLATE)
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html)
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html)
+with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
+    f.write(html)
+
+
