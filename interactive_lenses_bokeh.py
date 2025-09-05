@@ -826,7 +826,6 @@ left_indent = Spacer(width=LEFT, height=1)
 slider_row  = row(Spacer(width=LEFT-10, height=1), year_slider)
 ticks_row   = row(left_indent, tick_fig)
 
-
 legs = column(
     mathjax_loader,
     spacer1,
