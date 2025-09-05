@@ -842,9 +842,6 @@ datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
 latest_fn = "index.html"
 versioned_fn = f"index_{datestamp}.html"
 
-save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
-save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
-# save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=CDN)
 
 html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
 html = html.replace(
@@ -886,3 +883,6 @@ with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
     f.write(html)
 
 
+save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
+# save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
+save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=CDN)
