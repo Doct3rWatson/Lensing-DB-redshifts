@@ -17,7 +17,7 @@ from bokeh.models import (
 )
 from bokeh.layouts import column, row
 from bokeh.events import DocumentReady
-from bokeh.resources import INLINE
+from bokeh.resources import INLINE, CDN
 from bokeh.embed import file_html
 
 
@@ -269,15 +269,18 @@ year_marker_mid  = Span(location=initial_year, dimension="height",
 year_marker_tick = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
 
-histo_heights = 240 #140
+histo_heights = 140
 histo_widths = 650
-mainax_height = 600 #400
+mainax_height = 400
 mainax_width = 640
 
-
 # Top panel: normalized cumulative stacked bars (N_frac_total)
-p_top = figure(height=histo_heights, sizing_mode="stretch_width", 
-               tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
+p_top = figure(frame_height=histo_heights, frame_width=histo_widths, 
+               tools="pan,xwheel_zoom,box_zoom,reset,save",
+               toolbar_location=None)
+
+# p_top = figure(height=histo_heights, sizing_mode="stretch_width", 
+#                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_top.title.text = r"$$\text{Cumulative fractional total of source types}$$"
 p_top.xaxis.axis_label = r"$$\text{Year}$$"
 p_top.yaxis.axis_label = r"N$$_{\text{frac.\ total}}$$"
@@ -295,8 +298,11 @@ p_top.title.text_font_size='1.2em'
 
 
 # Middle panel: per-year stacked counts
-p_mid = figure(height=histo_heights, sizing_mode="stretch_width", 
-               tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
+p_mid = figure(frame_height=histo_heights, frame_width=histo_widths, 
+               tools="pan,xwheel_zoom,box_zoom,reset,save", 
+               toolbar_location=None)
+# p_mid = figure(height=histo_heights, sizing_mode="stretch_width", 
+#                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_mid.title.text = r"N$$_{\text{systems}}\ \text{ per year (stacked by source kind)}$$"
 p_mid.xaxis.axis_label = r"$$\text{Year}$$"
 p_mid.yaxis.axis_label = r"N$$_{\text{systems}}$$"
@@ -312,9 +318,14 @@ p_mid.xaxis.axis_label_text_font_size = '1.5em'
 p_mid.title.text_font_size='1.2em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
-p = figure(height=mainax_height, sizing_mode="stretch_width", 
-           tools="pan,wheel_zoom,box_zoom,reset,save,hover", toolbar_location="left", 
-           x_range=(0.0, 1.4), y_range=(0.0, 8.5))
+p = figure(
+    frame_width=mainax_width, frame_height=mainax_height,  # <- inner plotting area size
+    tools= "pan,wheel_zoom,box_zoom,reset,save,hover", 
+    toolbar_location="left", 
+    x_range=(0.0, 1.4), y_range=(0.0, 8.5))
+# p = figure(height=mainax_height, sizing_mode="stretch_width", 
+#            tools="pan,wheel_zoom,box_zoom,reset,save,hover", toolbar_location="left", 
+#            x_range=(0.0, 1.4), y_range=(0.0, 8.5))
 p.min_border_left = 80  # make space for y-axis labels; fixed so we can align the slider
 p.title.text = r"$$\text{Spectroscopically Confirmed Gravitational Lensing Systems}$$"
 p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
@@ -322,8 +333,8 @@ p.yaxis.axis_label = r"$$z_{\text{source}}$$"
 p.yaxis.axis_label_text_font_size = '2.5em'
 p.xaxis.axis_label_text_font_size = '2.5em'
 p.title.text_font_size='15pt'
-FW = mainax_width #int(p.frame_width)        # one source of truth for inner width
-FH = mainax_height
+FW = int(p.frame_width)        # one source of truth for inner width
+# FH = mainax_height
 LEFT = int(p.min_border_left)    # one source of truth for left indent
 
 header = Div(
@@ -420,23 +431,46 @@ for i, st in enumerate(stack_cols):
 # N_systems_this_year = (# rows where year == slider value)
 PAD = 40  # px inside the frame
 label_year = Label(
-    x=p.x_range.end, y=p.y_range.end,
-    x_units="data", y_units="data",
-    x_offset=-PAD, y_offset=-PAD,    # pixel offsets inward
+    x=p.frame_width - PAD - 22,            # right edge of the plotting area
+    y=p.frame_height - PAD,           # top edge of the plotting area
+    x_units="screen", y_units="screen",
     text=rf"$$\text{{Year }}{initial_year}$$",
+    text_font='computer modern',
     text_font_size="18pt",
-    text_align="right", text_baseline="top",
-    background_fill_color="white", background_fill_alpha=0.6
+    text_align="right",               # anchor text's right edge at x
+    text_baseline="top",              # anchor text's top at y
+    background_fill_color="white",    
+    background_fill_alpha=0.6
 )
 label_nsys = Label(
-    x=p.x_range.end, y=p.y_range.end,
-    x_units="data", y_units="data",
-    x_offset=-PAD, y_offset=-(PAD+25),
+    x=p.frame_width - PAD - 22,
+    y=p.frame_height - PAD - 30,      # a line below the first (adjust as needed)
+    x_units="screen", y_units="screen",
     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
     text_font_size="14pt",
-    text_align="right", text_baseline="top",
-    background_fill_color="white", background_fill_alpha=0.6
+    text_align="right",
+    text_baseline="top",
+    background_fill_color="white",
+    background_fill_alpha=0.6
 )
+# label_year = Label(
+#     x=p.x_range.end, y=p.y_range.end,
+#     x_units="data", y_units="data",
+#     x_offset=-PAD, y_offset=-PAD,    # pixel offsets inward
+#     text=rf"$$\text{{Year }}{initial_year}$$",
+#     text_font_size="18pt",
+#     text_align="right", text_baseline="top",
+#     background_fill_color="white", background_fill_alpha=0.6
+# )
+# label_nsys = Label(
+#     x=p.x_range.end, y=p.y_range.end,
+#     x_units="data", y_units="data",
+#     x_offset=-PAD, y_offset=-(PAD+25),
+#     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
+#     text_font_size="14pt",
+#     text_align="right", text_baseline="top",
+#     background_fill_color="white", background_fill_alpha=0.6
+# )
 
 p.add_layout(label_year)
 p.add_layout(label_nsys)
@@ -459,15 +493,23 @@ u_yr0  = int(py.loc[initial_year, "Unknown"]) if initial_year in py.index else 0
 mid_total0 = q_tot0 + g_tot0 + u_tot0
 
 
-MID_PAD = 8  # px offset from the top-left
+MID_PAD = 30  # px offset from the top-left
 label_mid_total = Label(
-    x=1979, y=70,
-    x_units="data", y_units="data",
+    x=MID_PAD, y=p_mid.frame_height - MID_PAD + 10,
+    x_units="screen", y_units="screen",
     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
     text_font_size="14pt",
     text_align="left", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
+# label_mid_total = Label(
+#     x=1979, y=70,
+#     x_units="data", y_units="data",
+#     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
+#     text_font_size="14pt",
+#     text_align="left", text_baseline="top",
+#     background_fill_color="white", background_fill_alpha=0.6
+# )
 p_mid.add_layout(label_mid_total)
 # p_mid.min_border_top = max(getattr(p_mid, "min_border_top", 0) or 0, 24)
 
@@ -522,28 +564,40 @@ end   = int(np.ceil(max_year/5.0)*5)        # e.g., 2025 or 2030 depending on da
 tick_years = list(range(start, end+1, 5))
 
 YEARS = [int(y) for y in years_all]  # pass to JS
-
 year_slider = Slider(
-    start=min_year, end=max_year, value=int(initial_year), step=1,
-    title=r"$$\text{Year}$$", show_value=False,
-    bar_color="#777777",
-    sizing_mode="stretch_width"
+    start=min_year, end=max_year, value=int(initial_year),   
+    step=1, title=r"$$\text{Step through years}$$", show_value=False,
+    width=FW+5, bar_color="#777777"
 )
+# year_slider = Slider(
+#     start=min_year, end=max_year, value=int(initial_year), step=1,
+#     title=r"$$\text{Year}$$", show_value=False,
+#     bar_color="#777777",
+#     sizing_mode="stretch_width"
+# )
 
 TICK_STRIP = 12          # thin plotting stripe
 LABEL_ROOM = 44          # room for rotated labels (try 36–48)
 tick_fig = figure(
-    sizing_mode="stretch_width",
-    height=12 + LABEL_ROOM,          # 12px stripe + ~44px for the rotated labels
-    frame_height=12,
-    toolbar_location=None,
-    x_range=Range1d(start - 0.5, end + 0.5),   # <-- padding on both sides
-    y_range=(0, 1),
+    frame_width=FW, frame_height=12, toolbar_location=None,
+    x_range=(start-0.5, end+0.5), y_range=(0, 1),
 )
-tick_fig.min_border_left  = 10       
-tick_fig.min_border_right = 0#12
+tick_fig.min_border_left  = 0       
+tick_fig.min_border_right = 12
 tick_fig.min_border_top   = 0
-tick_fig.min_border_bottom= LABEL_ROOM
+tick_fig.min_border_bottom= 0
+# tick_fig = figure(
+#     sizing_mode="stretch_width",
+#     height=12 + LABEL_ROOM,          # 12px stripe + ~44px for the rotated labels
+#     frame_height=12,
+#     toolbar_location=None,
+#     x_range=Range1d(start - 0.5, end + 0.5),   # <-- padding on both sides
+#     y_range=(0, 1),
+# )
+# tick_fig.min_border_left  = 10       
+# tick_fig.min_border_right = 0#12
+# tick_fig.min_border_top   = 0
+# tick_fig.min_border_bottom= LABEL_ROOM
 tick_fig.yaxis.visible = False
 tick_fig.grid.visible  = False
 tick_fig.outline_line_color = None
@@ -682,11 +736,11 @@ callback = CustomJS(
     const n_total = q_tot + g_tot + u_tot;
     label_mid_total.text = String.raw`$$\text{N}_{\text{cumulative}} = ${n_total}$$`;
     // keep it pinned to top-left of data area
-    label_mid_total.x_units = "data";
-    label_mid_total.y_units = "data";
-    label_mid_total.x = p_mid.x_range.start;
-    label_mid_total.y = p_mid.y_range.end;
-    label_mid_total.change.emit();
+    //label_mid_total.x_units = "data";
+    //label_mid_total.y_units = "data";
+    //label_mid_total.x = p_mid.x_range.start;
+    //label_mid_total.y = p_mid.y_range.end;
+    //label_mid_total.change.emit();
 
 
     // Update the right-column histogram legend text
@@ -737,48 +791,77 @@ year_slider.js_on_change("value", callback)
 
 
 # ---- Layout & output ----
-spacer1 = Spacer(width=1, height=histo_heights-100)
+# spacer1 = Spacer(width=1, height=histo_heights-100)
 
-GAP = histo_heights + 20
+# GAP = histo_heights + 20
+# spacer = Spacer(width=1, height=GAP)
+
+# legs = column(
+#     mathjax_loader,
+#     spacer1,
+#     hist_legend_div,   
+#     spacer,            
+#     legend_div)
+
+# left_indent = Spacer(width=LEFT, height=1)
+# slider_row = row(Spacer(width=LEFT), year_slider, sizing_mode="stretch_width")
+# ticks_row = row(Spacer(width=LEFT), tick_fig, sizing_mode="stretch_width")
+# gap_under_ticks = Spacer(height=6)
+
+# left_stack = column(p_top, 
+#                     p_mid, 
+#                     p, 
+#                     slider_row, 
+#                     ticks_row, 
+#                     sizing_mode="stretch_width")
+
+# layout = column(row(left_stack, legs, sizing_mode="stretch_width"), footer, sizing_mode="stretch_width")
+
+spacer1 = Spacer(width=1, height=p_top.frame_height-20)
+
+GAP = p_top.frame_height + p_mid.frame_height + 8   
 spacer = Spacer(width=1, height=GAP)
+
+left_indent = Spacer(width=LEFT, height=1)
+slider_row  = row(Spacer(width=LEFT-10, height=1), year_slider)
+ticks_row   = row(left_indent, tick_fig)
+
 
 legs = column(
     mathjax_loader,
     spacer1,
     hist_legend_div,   
     spacer,            
-    legend_div)
+    legend_div,        
+    width=360,
+)
+left_stack = column(
+    p_top,
+    p_mid,
+    p,
+    slider_row,
+    ticks_row
+)
+layout = column(row(left_stack, legs), footer)
 
-left_indent = Spacer(width=LEFT, height=1)
-slider_row = row(Spacer(width=LEFT), year_slider, sizing_mode="stretch_width")
-ticks_row = row(Spacer(width=LEFT), tick_fig, sizing_mode="stretch_width")
-gap_under_ticks = Spacer(height=6)
-
-left_stack = column(p_top, 
-                    p_mid, 
-                    p, 
-                    slider_row, 
-                    ticks_row, 
-                    sizing_mode="stretch_width")
-
-layout = column(row(left_stack, legs, sizing_mode="stretch_width"), footer, sizing_mode="stretch_width")
 
 datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
 latest_fn = "index.html"
 versioned_fn = f"index_{datestamp}.html"
 
 save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
-save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
+# save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
+save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=CDN)
 
-html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
-html = html.replace(
-    "</head>",
-    f'<meta name="author" content="Courtney B. Watson">\n'
-    f'<meta name="copyright" content="© {COPY_YEAR} Courtney B. Watson | AGEL Team">\n'
-    "</head>"
-)
+# html = file_html(layout, resources=INLINE, title="Confirmed Gravitational Lenses — Interactive")
+# html = html.replace(
+#     "</head>",
+#     f'<meta name="author" content="Courtney B. Watson">\n'
+#     f'<meta name="copyright" content="© {COPY_YEAR} Courtney B. Watson | AGEL Team">\n'
+#     "</head>"
+# )
 
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html)
-with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
-    f.write(html)
+# with open("index.html", "w", encoding="utf-8") as f:
+#     f.write(html)
+# with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
+#     f.write(html)
