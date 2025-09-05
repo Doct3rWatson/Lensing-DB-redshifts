@@ -78,7 +78,7 @@ def build_hist_legend_html(q_tot, g_tot, u_tot, q_year, g_year, u_year):
 """
 
 def style_ticks(fig,
-                label_size="1.2em",
+                label_size="1.2rem",
                 major_len=10, minor_len=5,
                 line_width=1.5,
                 label_standoff=5):
@@ -289,9 +289,9 @@ top_rends = p_top.vbar_stack(
     )
 p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
-p_top.yaxis.axis_label_text_font_size = '1.7em'
-p_top.xaxis.axis_label_text_font_size = '1.3em'
-p_top.title.text_font_size='1em'
+p_top.yaxis.axis_label_text_font_size = '1.7rem'
+p_top.xaxis.axis_label_text_font_size = '1.3rem'
+p_top.title.text_font_size='1rem'
 
 
 
@@ -311,9 +311,9 @@ mid_rends = p_mid.vbar_stack(
 )
 p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
-p_mid.yaxis.axis_label_text_font_size = '1.7em'
-p_mid.xaxis.axis_label_text_font_size = '1.3em'
-p_mid.title.text_font_size='1em'
+p_mid.yaxis.axis_label_text_font_size = '1.7rem'
+p_mid.xaxis.axis_label_text_font_size = '1.3rem'
+p_mid.title.text_font_size='1rem'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
 # p = figure(
@@ -328,9 +328,9 @@ p.min_border_left = 80  # make space for y-axis labels; fixed so we can align th
 p.title.text = r"$$\text{Spectroscopically Confirmed Gravitational Lensing Systems}$$"
 p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
 p.yaxis.axis_label = r"$$z_{\text{source}}$$"
-p.yaxis.axis_label_text_font_size = '2.5em'
-p.xaxis.axis_label_text_font_size = '2.5em'
-p.title.text_font_size='1.2em'
+p.yaxis.axis_label_text_font_size = '2.5rem'
+p.xaxis.axis_label_text_font_size = '2.5rem'
+p.title.text_font_size='1.2rem'
 FW = mainax_width #int(p.frame_width)        # one source of truth for inner width
 FH = mainax_height
 LEFT = int(p.min_border_left)    # one source of truth for left indent
@@ -343,7 +343,7 @@ header = Div(
 </div>""",
     stylesheets=[InlineStyleSheet(css="""
       .header{
-        font-family: serif; font-size: 2em; color:#444;
+        font-family: serif; font-size: 2rem; color:#444;
         border-bottom:1px solid #ddd; padding:10px 0; margin-top:12px;
         display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       }
@@ -362,7 +362,7 @@ footer = Div(
 </div>""",
     stylesheets=[InlineStyleSheet(css="""
       .footer{
-        font-family: serif; font-size: 1em; color:#444;
+        font-family: serif; font-size: 1rem; color:#444;
         border-top:1px solid #ddd; padding:10px 0; margin-top:12px;
         display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       }
