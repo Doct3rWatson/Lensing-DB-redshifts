@@ -276,9 +276,6 @@ mainax_width = 640
 
 
 # Top panel: normalized cumulative stacked bars (N_frac_total)
-# p_top = figure(frame_height=histo_heights, frame_width=histo_widths, 
-#                tools="pan,xwheel_zoom,box_zoom,reset,save",
-#                toolbar_location=None)
 p_top = figure(height=histo_heights, sizing_mode="stretch_width", 
                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_top.title.text = r"$$\text{Cumulative fractional total of source types}$$"
@@ -298,9 +295,6 @@ p_top.title.text_font_size='1.2em'
 
 
 # Middle panel: per-year stacked counts
-# p_mid = figure(frame_height=histo_heights, frame_width=histo_widths, 
-#                tools="pan,xwheel_zoom,box_zoom,reset,save", 
-#                toolbar_location=None)
 p_mid = figure(height=histo_heights, sizing_mode="stretch_width", 
                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_mid.title.text = r"N$$_{\text{systems}}\ \text{ per year (stacked by source kind)}$$"
@@ -318,11 +312,6 @@ p_mid.xaxis.axis_label_text_font_size = '1.5em'
 p_mid.title.text_font_size='1.2em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
-# p = figure(
-#     frame_width=mainax_width, frame_height=mainax_height,  # <- inner plotting area size
-#     tools= "pan,wheel_zoom,box_zoom,reset,save,hover", 
-#     toolbar_location="left", 
-#     x_range=(0.0, 1.4), y_range=(0.0, 8.5))
 p = figure(height=mainax_height, sizing_mode="stretch_width", 
            tools="pan,wheel_zoom,box_zoom,reset,save,hover", toolbar_location="left", 
            x_range=(0.0, 1.4), y_range=(0.0, 8.5))
@@ -430,18 +419,6 @@ for i, st in enumerate(stack_cols):
 # Dynamic text annotations: "Year Y" and "N_systems="
 # N_systems_this_year = (# rows where year == slider value)
 PAD = 40  # px inside the frame
-# label_year = Label(
-#     x=FW - PAD - 22, #p.frame_width - PAD - 22,            # right edge of the plotting area
-#     y=FH - PAD, #p.frame_height - PAD,           # top edge of the plotting area
-#     x_units="screen", y_units="screen",
-#     text=rf"$$\text{{Year }}{initial_year}$$",
-#     text_font='computer modern',
-#     text_font_size="18pt",
-#     text_align="right",               # anchor text's right edge at x
-#     text_baseline="top",              # anchor text's top at y
-#     background_fill_color="white",    
-#     background_fill_alpha=0.6
-# )
 label_year = Label(
     x=p.x_range.end, y=p.y_range.end,
     x_units="data", y_units="data",
@@ -451,17 +428,6 @@ label_year = Label(
     text_align="right", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
-# label_nsys = Label(
-#     x=FW - PAD - 22, #p.frame_width - PAD - 22,
-#     y=FH - PAD - 30, #p.frame_height - PAD - 30,      # a line below the first (adjust as needed)
-#     x_units="screen", y_units="screen",
-#     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
-#     text_font_size="14pt",
-#     text_align="right",
-#     text_baseline="top",
-#     background_fill_color="white",
-#     background_fill_alpha=0.6
-# )
 label_nsys = Label(
     x=p.x_range.end, y=p.y_range.end,
     x_units="data", y_units="data",
@@ -492,30 +458,18 @@ g_yr0  = int(py.loc[initial_year, "Galaxy"]) if initial_year in py.index else 0
 u_yr0  = int(py.loc[initial_year, "Unknown"]) if initial_year in py.index else 0
 mid_total0 = q_tot0 + g_tot0 + u_tot0
 
-MID_PAD = 30
-# label_mid_total = Label(
-#     x=MID_PAD, y=histo_heights - MID_PAD + 10, #p_mid.frame_height - MID_PAD + 10,
-#     x_units="screen", y_units="screen",
-#     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
-#     text_font_size="14pt",
-#     text_align="left", text_baseline="top",
-#     background_fill_color="white", background_fill_alpha=0.6
-# )
-MID_PAD = 8  # px offset from the top-left
 
+MID_PAD = 8  # px offset from the top-left
 label_mid_total = Label(
-    x=p_mid.x_range.end, y=p_mid.y_range.end,
+    x=1979, y=70,
     x_units="data", y_units="data",
-    x_offset=-MID_PAD, y_offset=-(MID_PAD+25),
     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
     text_font_size="14pt",
-    text_align="right", text_baseline="top",
+    text_align="left", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
 p_mid.add_layout(label_mid_total)
-
-# give a bit of headroom so the label isn't clipped
-p_mid.min_border_top = max(getattr(p_mid, "min_border_top", 0) or 0, 24)
+# p_mid.min_border_top = max(getattr(p_mid, "min_border_top", 0) or 0, 24)
 
 
 hist_legend_div = Div(width=360, margin=(0,0,10,0),
@@ -568,11 +522,7 @@ end   = int(np.ceil(max_year/5.0)*5)        # e.g., 2025 or 2030 depending on da
 tick_years = list(range(start, end+1, 5))
 
 YEARS = [int(y) for y in years_all]  # pass to JS
-# year_slider = Slider(
-#     start=min_year, end=max_year, value=int(initial_year),   
-#     step=1, title=r"$$\text{Step through years}$$", show_value=False,
-#     width=FW+5, bar_color="#777777"
-# )
+
 year_slider = Slider(
     start=start, end=end, value=int(initial_year), step=1,
     title=r"$$\text{Year}$$", show_value=False,
@@ -582,11 +532,6 @@ year_slider = Slider(
 
 TICK_STRIP = 12          # thin plotting stripe
 LABEL_ROOM = 44          # room for rotated labels (try 36–48)
-
-# tick_fig = figure(
-#     frame_width=FW, frame_height=12, toolbar_location=None,
-#     x_range=(start-0.5, end+0.5), y_range=(0, 1),
-# )
 tick_fig = figure(
     sizing_mode="stretch_width",
     height=12 + LABEL_ROOM,          # 12px stripe + ~44px for the rotated labels
@@ -605,7 +550,6 @@ tick_fig.outline_line_color = None
 tick_fig.xaxis.ticker = FixedTicker(ticks=tick_years, minor_ticks=YEARS)
 tick_fig.xaxis.major_label_orientation = 45
 tick_fig.xaxis.major_label_overrides = {y: rf"$${y}$$" for y in tick_years}
-# tick_fig.xaxis.major_label_overrides = {y: str(y) for y in tick_years}  # use plain text
 tick_fig.xaxis.major_label_text_font_size = "11pt"
 tick_fig.xaxis.major_label_standoff = 6  # small gap from axis line to labels
 tick_fig.xaxis.major_tick_out = 8        # keep visible ticks
@@ -793,9 +737,9 @@ year_slider.js_on_change("value", callback)
 
 
 # ---- Layout & output ----
-spacer1 = Spacer(width=1, height=histo_heights-5)
+spacer1 = Spacer(width=1, height=histo_heights-100)
 
-GAP = histo_heights 
+GAP = histo_heights + 20
 spacer = Spacer(width=1, height=GAP)
 
 legs = column(
@@ -803,10 +747,7 @@ legs = column(
     spacer1,
     hist_legend_div,   
     spacer,            
-    legend_div)#,        
-#     width=360,
-#     sizing_mode="stretch_height"
-# )
+    legend_div)
 
 left_indent = Spacer(width=LEFT, height=1)
 slider_row = row(Spacer(width=LEFT), year_slider, sizing_mode="stretch_width")
@@ -818,11 +759,9 @@ left_stack = column(p_top,
                     p, 
                     slider_row, 
                     ticks_row, 
-                    gap_under_ticks,
-                    sizing_mode="stretch_width", spacing=6)
+                    sizing_mode="stretch_width")
 
 layout = column(row(left_stack, legs, sizing_mode="stretch_width"), footer, sizing_mode="stretch_width")
-# layout.sizing_mode = "stretch_both" # set separately to avoid also setting children
 
 datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
 latest_fn = "index.html"
@@ -843,4 +782,3 @@ with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
 with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
     f.write(html)
-# print("Wrote .html")
