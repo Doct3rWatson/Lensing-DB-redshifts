@@ -60,8 +60,8 @@ def _svg_star(size=14, stroke="#000", fill="#000"):
 
 def build_hist_legend_html(q_tot, g_tot, u_tot, q_year, g_year, u_year):
     return rf"""
-<div style="font-size:12pt; margin-bottom:4px;"><b>Histogram Legend</b></div>
-<div style="display:flex; flex-direction:column; gap:6px; font-size:11pt;">
+<div style="font-size:1.2em; margin-bottom:4px;"><b>Histogram Legend</b></div>
+<div style="display:flex; flex-direction:column; gap:6px; font-size:1em;">
   <div style="display:flex; align-items:center; gap:8px;">
     <span style="display:inline-block; width:14px; height:14px; background:{HIST_COLS['Quasar']}; border:1px solid #666;"></span>
     $$\text{{Quasar, N}} = {q_tot}$$
@@ -78,7 +78,7 @@ def build_hist_legend_html(q_tot, g_tot, u_tot, q_year, g_year, u_year):
 """
 
 def style_ticks(fig,
-                label_size="14pt",
+                label_size="1.2em",
                 major_len=10, minor_len=5,
                 line_width=1.5,
                 label_standoff=5):
@@ -291,7 +291,7 @@ top_rends = p_top.vbar_stack(
     )
 p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
-p_top.yaxis.axis_label_text_font_size = '2.0em'
+p_top.yaxis.axis_label_text_font_size = '1.7em'
 p_top.xaxis.axis_label_text_font_size = '1.5em'
 p_top.title.text_font_size='1.2em'
 
@@ -313,7 +313,7 @@ mid_rends = p_mid.vbar_stack(
 )
 p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
-p_mid.yaxis.axis_label_text_font_size = '2.0em'
+p_mid.yaxis.axis_label_text_font_size = '1.7em'
 p_mid.xaxis.axis_label_text_font_size = '1.5em'
 p_mid.title.text_font_size='1.2em'
 
@@ -332,7 +332,7 @@ p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
 p.yaxis.axis_label = r"$$z_{\text{source}}$$"
 p.yaxis.axis_label_text_font_size = '2.5em'
 p.xaxis.axis_label_text_font_size = '2.5em'
-p.title.text_font_size='15pt'
+p.title.text_font_size='1.5em'
 FW = int(p.frame_width)        # one source of truth for inner width
 # FH = mainax_height
 LEFT = int(p.min_border_left)    # one source of truth for left indent
@@ -345,7 +345,7 @@ header = Div(
 </div>""",
     stylesheets=[InlineStyleSheet(css="""
       .header{
-        font-family: serif; font-size: 20pt; color:#444;
+        font-family: serif; font-size: 2em; color:#444;
         border-bottom:1px solid #ddd; padding:10px 0; margin-top:12px;
         display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       }
@@ -364,7 +364,7 @@ footer = Div(
 </div>""",
     stylesheets=[InlineStyleSheet(css="""
       .footer{
-        font-family: serif; font-size: 11pt; color:#444;
+        font-family: serif; font-size: 1em; color:#444;
         border-top:1px solid #ddd; padding:10px 0; margin-top:12px;
         display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       }
@@ -431,24 +431,24 @@ for i, st in enumerate(stack_cols):
 # N_systems_this_year = (# rows where year == slider value)
 PAD = 40  # px inside the frame
 label_year = Label(
-    x=p.frame_width - PAD - 22,            # right edge of the plotting area
+    x=p.frame_width - PAD - PAD,            # right edge of the plotting area
     y=p.frame_height - PAD,           # top edge of the plotting area
     x_units="screen", y_units="screen",
     text=rf"$$\text{{Year }}{initial_year}$$",
     text_font='computer modern',
-    text_font_size="18pt",
-    text_align="right",               # anchor text's right edge at x
+    text_font_size="1.5em",
+    text_align="center",               # anchor text's right edge at x
     text_baseline="top",              # anchor text's top at y
     background_fill_color="white",    
     background_fill_alpha=0.6
 )
 label_nsys = Label(
-    x=p.frame_width - PAD - 22,
+    x=p.frame_width - PAD - PAD,
     y=p.frame_height - PAD - 30,      # a line below the first (adjust as needed)
     x_units="screen", y_units="screen",
     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
-    text_font_size="14pt",
-    text_align="right",
+    text_font_size="1.2em",
+    text_align="center",
     text_baseline="top",
     background_fill_color="white",
     background_fill_alpha=0.6
@@ -498,7 +498,7 @@ label_mid_total = Label(
     x=MID_PAD, y=p_mid.frame_height - MID_PAD + 10,
     x_units="screen", y_units="screen",
     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
-    text_font_size="14pt",
+    text_font_size="1.2em",
     text_align="left", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
@@ -528,11 +528,11 @@ def initial_counts_html(cur_year: int) -> str:
         n = int((sub["survey"] == k).sum())
         col = COLOR_MAP[k]
         parts.append(
-            rf"<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
+            rf"<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
         )
     n_others = int((~sub["survey"].isin(list(COLOR_MAP.keys())[:-1])).sum())
     parts.append(
-        "<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;"
+        "<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;"
         "background:gray;margin-right:8px;'></span>"
         rf"$$\text{{Other surveys, N}} ={n_others}$$</div>"
     )
@@ -551,7 +551,7 @@ def initial_counts_html(cur_year: int) -> str:
     )
 
     return (
-        "<div style='font-size:14pt'><b>Surveys</b></div>"
+        "<div style='font-size:1.2em'><b>Surveys</b></div>"
         + "".join(parts)
         + marker_key_html
     )
@@ -604,7 +604,7 @@ tick_fig.outline_line_color = None
 tick_fig.xaxis.ticker = FixedTicker(ticks=tick_years, minor_ticks=YEARS)
 tick_fig.xaxis.major_label_orientation = 45
 tick_fig.xaxis.major_label_overrides = {y: rf"$${y}$$" for y in tick_years}
-tick_fig.xaxis.major_label_text_font_size = "11pt"
+tick_fig.xaxis.major_label_text_font_size = "1.4em"
 tick_fig.xaxis.major_label_standoff = 6  # small gap from axis line to labels
 tick_fig.xaxis.major_tick_out = 8        # keep visible ticks
 
@@ -614,9 +614,9 @@ tick_fig.frame_height = 12               # the stripe itself; labels live in the
 
 tick_fig.add_layout(year_marker_tick)
 
-style_ticks(p_top,  label_size="12pt", major_len=8,  minor_len=4, line_width=1.2)
-style_ticks(p_mid,  label_size="12pt", major_len=8,  minor_len=4, line_width=1.2)
-style_ticks(p,      label_size="13pt", major_len=10, minor_len=5, line_width=1.5)
+style_ticks(p_top,  label_size="1.2em", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p_mid,  label_size="1.2em", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p,      label_size="1.4em", major_len=10, minor_len=5, line_width=1.5)
 
 _marker_key_html = (
     "<hr style='margin:8px 0'/>"
@@ -706,18 +706,18 @@ callback = CustomJS(
     }
     // Explicit order like your legend:
     const order = ['CLASS','SLACS','BELLS','SL2S','CASSOWARY','AGEL','Serendipitous'];
-    let html = "<div style='font-size:12pt'><b>Surveys</b></div>";
+    let html = "<div style='font-size:1.2em'><b>Surveys</b></div>";
     for (const k of order) {
         const c = counts[k] || 0;
         const col = color_map[k];
-        html += String.raw`<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:${col};margin-right:8px;'></span>$$\text{${k}, N} = ${c}$$</div>`;
+        html += String.raw`<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;background:${col};margin-right:8px;'></span>$$\text{${k}, N} = ${c}$$</div>`;
 }
     // Others
     let others = 0;
     for (const k in counts) {
         if (!order.includes(k)) others += counts[k];
     }
-    html += String.raw`<div style='font-size:11pt;'><span style='display:inline-block;width:12px;height:12px;background:gray;margin-right:8px;'></span>$$\text{Other surveys, N} = ${others}$$</div>`;
+    html += String.raw`<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;background:gray;margin-right:8px;'></span>$$\text{Other surveys, N} = ${others}$$</div>`;
     legend_div.text = html + marker_key_html;
     if (year_span_top) year_span_top.location = yr;
     if (year_span_mid) year_span_mid.location = yr;
@@ -745,8 +745,8 @@ callback = CustomJS(
 
     // Update the right-column histogram legend text
     hist_legend_div.text = String.raw`
-    <div style="font-size:12pt; margin-bottom:4px;"><b>Histogram Legend</b></div>
-    <div style="display:flex; flex-direction:column; gap:6px; font-size:11pt;">
+    <div style="font-size:1.2em; margin-bottom:4px;"><b>Histogram Legend</b></div>
+    <div style="display:flex; flex-direction:column; gap:6px; font-size:1em;">
     <div style="display:flex; align-items:center; gap:8px;">
         <span style="display:inline-block; width:14px; height:14px; background:#777777; border:1px solid #666;"></span>
         $$\text{Quasar, N }  = ${q_tot}$$
