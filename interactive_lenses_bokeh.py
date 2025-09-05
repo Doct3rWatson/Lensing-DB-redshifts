@@ -63,8 +63,8 @@ def _svg_star(size=14, stroke="#000", fill="#000"):
 
 def build_hist_legend_html(q_tot, g_tot, u_tot, q_year, g_year, u_year):
     return rf"""
-<div style="font-size:1.2rem; margin-bottom:4px;"><b>Histogram Legend</b></div>
-<div style="display:flex; flex-direction:column; gap:6px; font-size:1rem;">
+<div style="font-size:1.2em; margin-bottom:4px;"><b>Histogram Legend</b></div>
+<div style="display:flex; flex-direction:column; gap:6px; font-size:1em;">
   <div style="display:flex; align-items:center; gap:8px;">
     <span style="display:inline-block; width:12px; height:12px; background:{HIST_COLS['Quasar']}; border:1px solid #666;"></span>
     $$\text{{Quasar, N}} = {q_tot}$$
@@ -81,7 +81,7 @@ def build_hist_legend_html(q_tot, g_tot, u_tot, q_year, g_year, u_year):
 """
 
 def style_ticks(fig,
-                label_size="1.2rem",
+                label_size="1.2em",
                 major_len=10, minor_len=5,
                 line_width=1.5,
                 label_standoff=5):
@@ -272,7 +272,7 @@ year_marker_mid  = Span(location=initial_year, dimension="height",
 year_marker_tick = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
 histo_heights = 140
-histo_widths = 650
+histo_widths = 670
 mainax_height = 400
 mainax_width = 640
 
@@ -292,16 +292,17 @@ top_rends = p_top.vbar_stack(
     )
 p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
-p_top.yaxis.axis_label_text_font_size = '1.7rem'
-p_top.xaxis.axis_label_text_font_size = '1.3rem'
-p_top.title.text_font_size='1rem'
+p_top.yaxis.axis_label_text_font_size = '1.7em'
+p_top.xaxis.axis_label_text_font_size = '1.3em'
+p_top.title.text_font_size='1.2em'
 
 
 
 # Middle panel: per-year stacked counts
 p_mid = figure(frame_height=histo_heights, frame_width=histo_widths, 
                tools="pan,xwheel_zoom,box_zoom,reset,save", 
-               toolbar_location=None)
+               toolbar_location=None,
+               x_range=p_top.x_range)
 # p_mid = figure(height=histo_heights, sizing_mode="stretch_width", 
 #                tools="pan,xwheel_zoom,box_zoom,reset,save", toolbar_location=None)
 p_mid.title.text = r"N$$_{\text{systems}}\ \text{ per year (stacked by source kind)}$$"
@@ -314,9 +315,9 @@ mid_rends = p_mid.vbar_stack(
 )
 p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
-p_mid.yaxis.axis_label_text_font_size = '1.7rem'
-p_mid.xaxis.axis_label_text_font_size = '1.3rem'
-p_mid.title.text_font_size='1rem'
+p_mid.yaxis.axis_label_text_font_size = '1.7em'
+p_mid.xaxis.axis_label_text_font_size = '1.3em'
+p_mid.title.text_font_size='1.2em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
 p = figure(
@@ -331,9 +332,9 @@ p.min_border_left = 80  # make space for y-axis labels; fixed so we can align th
 p.title.text = r"$$\text{Spectroscopically Confirmed Gravitational Lensing Systems}$$"
 p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
 p.yaxis.axis_label = r"$$z_{\text{source}}$$"
-p.yaxis.axis_label_text_font_size = '2.5rem'
-p.xaxis.axis_label_text_font_size = '2.5rem'
-p.title.text_font_size='1.4rem'
+p.yaxis.axis_label_text_font_size = '2.5em'
+p.xaxis.axis_label_text_font_size = '2.5em'
+p.title.text_font_size='1.5em'
 FW = int(p.frame_width)        # one source of truth for inner width
 # FH = mainax_height
 LEFT = int(p.min_border_left)    # one source of truth for left indent
@@ -346,7 +347,7 @@ header = Div(
 </div>""",
     stylesheets=[InlineStyleSheet(css="""
       .header{
-        font-family: serif; font-size: 2rem; color:#444;
+        font-family: serif; font-size: 2em; color:#444;
         border-bottom:1px solid #ddd; padding:10px 0; margin-top:12px;
         display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
       }
@@ -437,7 +438,7 @@ label_year = Label(
     x_units="screen", y_units="screen",
     text=rf"$$\text{{Year }}{initial_year}$$",
     text_font='computer modern',
-    text_font_size="1.5rem",
+    text_font_size="1.5em",
     text_align="center",               # anchor text's right edge at x
     text_baseline="top",              # anchor text's top at y
     background_fill_color="white",    
@@ -448,31 +449,12 @@ label_nsys = Label(
     y=p.frame_height - PAD - 30,      # a line below the first (adjust as needed)
     x_units="screen", y_units="screen",
     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
-    text_font_size="1.2rem",
+    text_font_size="1.2em",
     text_align="center",
     text_baseline="top",
     background_fill_color="white",
     background_fill_alpha=0.6
 )
-# label_year = Label(
-#     x=p.x_range.end, y=p.y_range.end,
-#     x_units="data", y_units="data",
-#     x_offset=-PAD, y_offset=-PAD,    # pixel offsets inward
-#     text=rf"$$\text{{Year }}{initial_year}$$",
-#     text_font_size="1.5rem",
-#     text_align="right", text_baseline="top",
-#     background_fill_color="white", background_fill_alpha=0.6
-# )
-# label_nsys = Label(
-#     x=p.x_range.end, y=p.y_range.end,
-#     x_units="data", y_units="data",
-#     x_offset=-PAD, y_offset=-(PAD+25),
-#     text=rf"N$$_{{\text{{systems}}}} = {len(df)}$$",
-#     text_font_size="1.2rem",
-#     text_align="right", text_baseline="top",
-#     background_fill_color="white", background_fill_alpha=0.6
-# )
-
 p.add_layout(label_year)
 p.add_layout(label_nsys)
 
@@ -499,20 +481,11 @@ label_mid_total = Label(
     x=MID_PAD, y=p_mid.frame_height - MID_PAD + 10,
     x_units="screen", y_units="screen",
     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
-    text_font_size="1.2rem",
+    text_font_size="1.2em",
     text_align="left", text_baseline="top",
     background_fill_color="white", background_fill_alpha=0.6
 )
-# label_mid_total = Label(
-#     x=1979, y=70,
-#     x_units="data", y_units="data",
-#     text=rf"$$\text{{N}}_{{\text{{cumulative}}}} = {mid_total0}$$",
-#     text_font_size="1.2rem",
-#     text_align="left", text_baseline="top",
-#     background_fill_color="white", background_fill_alpha=0.6
-# )
 p_mid.add_layout(label_mid_total)
-# p_mid.min_border_top = max(getattr(p_mid, "min_border_top", 0) or 0, 24)
 
 
 hist_legend_div = Div(width=360, margin=(0,0,10,0),
@@ -529,11 +502,11 @@ def initial_counts_html(cur_year: int) -> str:
         n = int((sub["survey"] == k).sum())
         col = COLOR_MAP[k]
         parts.append(
-            rf"<div style='font-size:1rem;'><span style='display:inline-block;width:12px;height:12px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
+            rf"<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;background:{col};margin-right:8px;'></span>$$\text{{{k}, N }}={n}$$</div>"
         )
     n_others = int((~sub["survey"].isin(list(COLOR_MAP.keys())[:-1])).sum())
     parts.append(
-        "<div style='font-size:1rem;'><span style='display:inline-block;width:12px;height:12px;"
+        "<div style='font-size:1em;'><span style='display:inline-block;width:12px;height:12px;"
         "background:gray;margin-right:8px;'></span>"
         rf"$$\text{{Other surveys, N}} ={n_others}$$</div>"
     )
@@ -552,7 +525,7 @@ def initial_counts_html(cur_year: int) -> str:
     )
 
     return (
-        "<div style='font-size:1.rem'><b>Surveys</b></div>"
+        "<div style='font-size:1.2em'><b>Surveys</b></div>"
         + "".join(parts)
         + marker_key_html
     )
@@ -571,13 +544,6 @@ year_slider = Slider(
     width=FW+5, bar_color="#777777"
 )
 
-# year_slider = Slider(
-#     start=min_year, end=max_year, value=int(initial_year), step=1,
-#     title=r"$$\text{Year}$$", show_value=False,
-#     bar_color="#777777",
-#     sizing_mode="stretch_width"
-# )
-
 TICK_STRIP = 12          # thin plotting stripe
 LABEL_ROOM = 44          # room for rotated labels (try 36–48)
 tick_fig = figure(
@@ -588,32 +554,20 @@ tick_fig.min_border_left  = 0
 tick_fig.min_border_right = 12
 tick_fig.min_border_top   = 0
 tick_fig.min_border_bottom= 0
-# tick_fig = figure(
-#     sizing_mode="stretch_width",
-#     height=12 + LABEL_ROOM,          # 12px stripe + ~44px for the rotated labels
-#     frame_height=12,
-#     toolbar_location=None,
-#     x_range=Range1d(start - 0.5, end + 0.5),   # <-- padding on both sides
-#     y_range=(0, 1),
-# )
-# tick_fig.min_border_left  = 10       
-# tick_fig.min_border_right = 0#12
-# tick_fig.min_border_top   = 0
-# tick_fig.min_border_bottom= LABEL_ROOM
 tick_fig.yaxis.visible = False
 tick_fig.grid.visible  = False
 tick_fig.outline_line_color = None
 tick_fig.xaxis.ticker = FixedTicker(ticks=tick_years, minor_ticks=YEARS)
 tick_fig.xaxis.major_label_orientation = 45
 tick_fig.xaxis.major_label_overrides = {y: rf"$${y}$$" for y in tick_years}
-tick_fig.xaxis.major_label_text_font_size = "1.4rem"
+tick_fig.xaxis.major_label_text_font_size = "1.4em"
 tick_fig.xaxis.major_label_standoff = 6  # small gap from axis line to labels
 tick_fig.xaxis.major_tick_out = 8        # keep visible ticks
 tick_fig.add_layout(year_marker_tick)
 
-style_ticks(p_top,  label_size="1.1rem", major_len=8,  minor_len=4, line_width=1.2)
-style_ticks(p_mid,  label_size="1.1rem", major_len=8,  minor_len=4, line_width=1.2)
-style_ticks(p,      label_size="1.4rem", major_len=10, minor_len=5, line_width=1.5)
+style_ticks(p_top,  label_size="1.1em", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p_mid,  label_size="1.1em", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p,      label_size="1.4em", major_len=10, minor_len=5, line_width=1.5)
 
 _marker_key_html = (
     "<hr style='margin:8px 0'/>"
@@ -732,12 +686,6 @@ callback = CustomJS(
     // Update the middle-panel label in the upper-left
     const n_total = q_tot + g_tot + u_tot;
     label_mid_total.text = String.raw`$$\text{N}_{\text{cumulative}} = ${n_total}$$`;
-    // keep it pinned to top-left of data area
-    //label_mid_total.x_units = "data";
-    //label_mid_total.y_units = "data";
-    //label_mid_total.x = p_mid.x_range.start;
-    //label_mid_total.y = p_mid.y_range.end;
-    //label_mid_total.change.emit();
 
 
     // Update the right-column histogram legend text
@@ -745,15 +693,15 @@ callback = CustomJS(
     <div style="font-size:1.2em; margin-bottom:4px;"><b>Histogram Legend</b></div>
     <div style="display:flex; flex-direction:column; gap:6px; font-size:1em;">
     <div style="display:flex; align-items:center; gap:8px;">
-        <span style="display:inline-block; width:14px; height:14px; background:#777777; border:1px solid #666;"></span>
+        <span style="display:inline-block; width:12px; height:12px; background:#777777; border:1px solid #666;"></span>
         $$\text{Quasar, N }  = ${q_tot}$$
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
-        <span style="display:inline-block; width:14px; height:14px; background:#000000; border:1px solid #666;"></span>
+        <span style="display:inline-block; width:12px; height:12px; background:#000000; border:1px solid #666;"></span>
         $$\text{Galaxy, N }  = ${g_tot}$$
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
-        <span style="display:inline-block; width:14px; height:14px; background:#CCCCCC; border:1px solid #666;"></span>
+        <span style="display:inline-block; width:12px; height:12px; background:#CCCCCC; border:1px solid #666;"></span>
         $$\text{Unknown, N }  = ${u_tot}$$
     </div>
     </div>`;
@@ -788,35 +736,9 @@ year_slider.js_on_change("value", callback)
 
 
 # ---- Layout & output ----
-# spacer1 = Spacer(width=1, height=histo_heights-100)
-
-# GAP = histo_heights + 20
-# spacer = Spacer(width=1, height=GAP)
-
-# legs = column(
-#     mathjax_loader,
-#     spacer1,
-#     hist_legend_div,   
-#     spacer,            
-#     legend_div)
-
-# left_indent = Spacer(width=LEFT, height=1)
-# slider_row = row(Spacer(width=LEFT), year_slider, sizing_mode="stretch_width")
-# ticks_row = row(Spacer(width=LEFT), tick_fig, sizing_mode="stretch_width")
-# gap_under_ticks = Spacer(height=6)
-
-# left_stack = column(p_top, 
-#                     p_mid, 
-#                     p, 
-#                     slider_row, 
-#                     ticks_row, 
-#                     sizing_mode="stretch_width")
-
-# layout = column(row(left_stack, legs, sizing_mode="stretch_width"), footer, sizing_mode="stretch_width")
-
 spacer1 = Spacer(width=1, height=p_top.frame_height-20)
 
-GAP = p_top.frame_height + p_mid.frame_height + 8   
+GAP = p_top.frame_height + p_mid.frame_height - 20
 spacer = Spacer(width=1, height=GAP)
 
 left_indent = Spacer(width=LEFT, height=1)
@@ -838,7 +760,8 @@ left_stack = column(
     slider_row,
     ticks_row
 )
-layout = column(row(left_stack, legs), footer)
+leg_spacer = Spacer(width=5, height=1)
+layout = column(row(left_stack, leg_spacer, legs), footer)
 
 
 datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
