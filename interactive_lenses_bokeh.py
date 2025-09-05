@@ -268,7 +268,6 @@ year_marker_mid  = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
 year_marker_tick = Span(location=initial_year, dimension="height",
                         line_color="black", line_dash="dashed", line_width=2)
-
 histo_heights = 140
 histo_widths = 650
 mainax_height = 400
@@ -292,8 +291,8 @@ top_rends = p_top.vbar_stack(
 p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
 p_top.yaxis.axis_label_text_font_size = '1.7em'
-p_top.xaxis.axis_label_text_font_size = '1.5em'
-p_top.title.text_font_size='1.2em'
+p_top.xaxis.axis_label_text_font_size = '1.3em'
+p_top.title.text_font_size='0.9em'
 
 
 
@@ -314,8 +313,8 @@ mid_rends = p_mid.vbar_stack(
 p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
 p_mid.yaxis.axis_label_text_font_size = '1.7em'
-p_mid.xaxis.axis_label_text_font_size = '1.5em'
-p_mid.title.text_font_size='1.2em'
+p_mid.xaxis.axis_label_text_font_size = '1.3em'
+p_mid.title.text_font_size='0.9em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
 p = figure(
@@ -332,7 +331,7 @@ p.xaxis.axis_label = r"$$z_{\text{deflector}}$$"
 p.yaxis.axis_label = r"$$z_{\text{source}}$$"
 p.yaxis.axis_label_text_font_size = '2.5em'
 p.xaxis.axis_label_text_font_size = '2.5em'
-p.title.text_font_size='1.5em'
+p.title.text_font_size='1.2em'
 FW = int(p.frame_width)        # one source of truth for inner width
 # FH = mainax_height
 LEFT = int(p.min_border_left)    # one source of truth for left indent
@@ -569,6 +568,7 @@ year_slider = Slider(
     step=1, title=r"$$\text{Step through years}$$", show_value=False,
     width=FW+5, bar_color="#777777"
 )
+
 # year_slider = Slider(
 #     start=min_year, end=max_year, value=int(initial_year), step=1,
 #     title=r"$$\text{Year}$$", show_value=False,
@@ -607,11 +607,6 @@ tick_fig.xaxis.major_label_overrides = {y: rf"$${y}$$" for y in tick_years}
 tick_fig.xaxis.major_label_text_font_size = "1.4em"
 tick_fig.xaxis.major_label_standoff = 6  # small gap from axis line to labels
 tick_fig.xaxis.major_tick_out = 8        # keep visible ticks
-
-
-# Keep the plotting stripe thin but leave space for labels
-tick_fig.frame_height = 12               # the stripe itself; labels live in the border
-
 tick_fig.add_layout(year_marker_tick)
 
 style_ticks(p_top,  label_size="1.2em", major_len=8,  minor_len=4, line_width=1.2)
