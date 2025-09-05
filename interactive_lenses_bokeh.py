@@ -524,7 +524,7 @@ tick_years = list(range(start, end+1, 5))
 YEARS = [int(y) for y in years_all]  # pass to JS
 
 year_slider = Slider(
-    start=start, end=end, value=int(initial_year), step=1,
+    start=min_year, end=max_year, value=int(initial_year), step=1,
     title=r"$$\text{Year}$$", show_value=False,
     bar_color="#777777",
     sizing_mode="stretch_width"
