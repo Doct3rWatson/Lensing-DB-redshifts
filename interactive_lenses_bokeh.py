@@ -742,7 +742,7 @@ GAP = p_top.frame_height + p_mid.frame_height - 20
 spacer = Spacer(width=1, height=GAP)
 
 left_indent = Spacer(width=LEFT, height=1)
-slider_row  = row(Spacer(width=LEFT-10, height=1), year_slider)
+slider_row  = row(Spacer(width=LEFT-15, height=1), year_slider)
 ticks_row   = row(left_indent, tick_fig)
 
 legs = column(
