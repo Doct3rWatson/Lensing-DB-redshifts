@@ -608,8 +608,8 @@ tick_fig.xaxis.major_label_standoff = 6  # small gap from axis line to labels
 tick_fig.xaxis.major_tick_out = 8        # keep visible ticks
 tick_fig.add_layout(year_marker_tick)
 
-style_ticks(p_top,  label_size="1.2rem", major_len=8,  minor_len=4, line_width=1.2)
-style_ticks(p_mid,  label_size="1.2rem", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p_top,  label_size="1.1rem", major_len=8,  minor_len=4, line_width=1.2)
+style_ticks(p_mid,  label_size="1.1rem", major_len=8,  minor_len=4, line_width=1.2)
 style_ticks(p,      label_size="1.4rem", major_len=10, minor_len=5, line_width=1.5)
 
 _marker_key_html = (
