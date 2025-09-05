@@ -292,7 +292,7 @@ p_top.y_range = Range1d(0, 1)
 p_top.add_layout(year_marker_top)
 p_top.yaxis.axis_label_text_font_size = '1.7em'
 p_top.xaxis.axis_label_text_font_size = '1.3em'
-p_top.title.text_font_size='0.9em'
+p_top.title.text_font_size='1em'
 
 
 
@@ -314,7 +314,7 @@ p_mid.y_range.start = 0
 p_mid.add_layout(year_marker_mid)
 p_mid.yaxis.axis_label_text_font_size = '1.7em'
 p_mid.xaxis.axis_label_text_font_size = '1.3em'
-p_mid.title.text_font_size='0.9em'
+p_mid.title.text_font_size='1em'
 
 # # Bottom panel: z_src vs z_def (exact axes limits)
 p = figure(
