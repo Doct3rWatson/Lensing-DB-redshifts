@@ -102,6 +102,71 @@ def style_ticks(fig,
         ax.major_tick_line_width = line_width
         ax.minor_tick_line_width = max(1, line_width - 0.5)
 
+help_css = InlineStyleSheet(css="""
+  .help-card{
+    font-family: Georgia, "Times New Roman", serif;
+    background:#fff;
+    border:1px solid #ddd; border-radius:12px;
+    padding:14px 16px; line-height:1.45;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .help-card h2{ margin:0 0 8px; font-size:1.2em; }
+  .help-card h3{ margin:12px 0 6px; font-size:1.05em; }
+  .help-card ul{ margin:6px 0 10px 18px; }
+  .help-key { display:flex; gap:8px; align-items:center; }
+  .help-badge { display:inline-block; min-width:12px; height:12px; margin-right:6px; border:1px solid #666; }
+  .q { background:#777; } .g { background:#000; } .u { background:#CCC; }
+  .muted { color:#555; font-size:0.95em; }
+""")
+
+help_html = rf"""
+<div class="help-card">
+  <h2>Using the Interactive Strong Lensing Catalog</h2>
+
+  <h3>What is plotted</h3>
+  <ul>
+    <li><b>Top panel:</b> Cumulative fractional totals by source type (Quasar / Galaxy / Unknown) over time.</li>
+    <li><b>Middle panel:</b> Per-year counts by source type, stacked. $$N_{{\text{{cumulative}}}}$$ reflects cumulative total of systems in all years $$\le$$ selected year on slider.</li>
+    <li><b>Bottom panel:</b> Spectroscopic $$z_{{\text{{deflector}}}}$$ vs. $$z_{{\text{{source}}}}$$. $$N_{{\text{{systems}}}}$$  reflects number of systems published in each year.</li>
+  </ul>
+
+  <h3>Core interactions</h3>
+  <ul>
+    <li><b>Step through years:</b> Drag the slider at bottom of page or click its bar to navigate to specific year.</li>
+    <li><b>Hover over data to view:</b>
+      <ul>
+        <li><b>Histograms:</b> Year, source type, <i>active year</i> count, <i>cumulative</i> count.</li>
+        <li><b>Scatter points:</b> Survey, source type, year published, $$z_{{\text{{def}}}}$$, $$z_{{\text{{src}}}}$$.</li>
+        <ul>
+         <li><b>Clicking:</b> on scatter points opens the paper, linked to that source, on ADS in a new tab (when a bibcode/url is available). When you return to this window, the point you clicked on will be highlighted while the other points will be grayed out. Simply click anywehere in the plot window to reset view.</li>
+        </ul>
+      </ul>
+    </li>
+    <li><b>Zoom & pan:</b> Use the toolbar to the left of each plot to customize the view
+      <ul>
+        <li><b>Pan</b>, <b>Box zoom</b>, <b>wheel zoom</b>, <b>Reset</b>, <b>Save</b>.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Legend / markers</h3>
+  <ul>
+    <li>Histogram colors:
+      <span class="help-key"><span class="help-badge q"></span>Quasar</span>
+      <span class="help-key"><span class="help-badge g"></span>Galaxy</span>
+      <span class="help-key"><span class="help-badge u"></span>Unknown</span>
+    </li>
+    <li><b>Scatter Plot:</b> 
+      <ul>
+       <li><b>Colors:</b> Each of the major lensing surveys is represented by a different color. Many other surveys are included with "Other surveys" and can be seen by hovering over the point of interest in the bottom plot. $$N$$ reflects the cumulative number of detected systems, per category</li>
+       <li><b>Symbols:</b> Denote Quasar/Galaxy/Unknown source type or an AGEL system (blue stars)
+      </ul>
+    </li>
+  </ul>
+  <p class="muted">© {COPY_YEAR} Courtney B. Watson | AGEL Team. Please reach out if you find any issues.</p>
+</div>
+"""
+
 
 # ---- Input data ----
 CSV_PATH = "spec_conf_lens_db.csv"
@@ -359,7 +424,7 @@ footer = Div(
     sizing_mode="stretch_width",
     text=f"""
 <div class="footer">
-  <span>© {COPY_YEAR} Courtney B. Watson | AGEL Team. All rights reserved.</span>
+  <span>© {COPY_YEAR} Courtney B. Watson | AGEL Team.</span>
   <span>· Build {BUILD_DATE} · {VERSION}</span>
   <span>· Source: <a href="https://github.com/Doct3rWatson/Lensing-DB-redshifts" target="_blank" rel="noopener">GitHub</a></span>
   <span>· <a href="mailto:courtney.watson@cfa.harvard.edu">courtney.watson@cfa.harvard.edu</a></span>
@@ -569,6 +634,8 @@ style_ticks(p_top,  label_size="1.1em", major_len=8,  minor_len=4, line_width=1.
 style_ticks(p_mid,  label_size="1.1em", major_len=8,  minor_len=4, line_width=1.2)
 style_ticks(p,      label_size="1.4em", major_len=10, minor_len=5, line_width=1.5)
 
+help_div = Div(text=help_html, stylesheets=[help_css])#, width=360)
+
 _marker_key_html = (
     "<hr style='margin:8px 0'/>"
     "<div><b>Marker key</b></div>"
@@ -734,17 +801,35 @@ year_slider.js_on_event(
 
 year_slider.js_on_change("value", callback)
 
+# Re-typeset this panel when the doc is ready (if you’re already loading MathJax v3)
+help_div.js_on_event(
+    DocumentReady,
+    CustomJS(args=dict(panel=help_div), code="""
+      if (window.MathJax && MathJax.typesetPromise) {
+        const v = Bokeh.index[panel.id];
+        if (v && v.el) MathJax.typesetPromise([v.el]).catch(()=>{});
+      }
+    """)
+)
 
 # ---- Layout & output ----
 spacer1 = Spacer(width=1, height=p_top.frame_height-20)
-
 GAP = p_top.frame_height + p_mid.frame_height - 20
 spacer = Spacer(width=1, height=GAP)
 
 left_indent = Spacer(width=LEFT, height=1)
 slider_row  = row(Spacer(width=LEFT-15, height=1), year_slider)
 ticks_row   = row(left_indent, tick_fig)
+leg_spacer = Spacer(width=5, height=1)
+col_spacer = Spacer(width=1, height=1)
 
+left_stack = column(
+    p_top,
+    p_mid,
+    p,
+    slider_row,
+    ticks_row
+)
 legs = column(
     mathjax_loader,
     spacer1,
@@ -753,15 +838,10 @@ legs = column(
     legend_div,        
     width=360,
 )
-left_stack = column(
-    p_top,
-    p_mid,
-    p,
-    slider_row,
-    ticks_row
-)
-leg_spacer = Spacer(width=5, height=1)
-layout = column(row(left_stack, leg_spacer, legs), footer)
+help_col = column(help_div, width=360)
+
+
+layout = column(row(left_stack, leg_spacer, legs, help_col), footer)
 
 
 datestamp = datetime.now().strftime("%Y%m%d")   # e.g., 20250903
@@ -811,4 +891,4 @@ with open(f"index_{datestamp}.html", "w", encoding="utf-8") as f:
 
 save(layout, filename=latest_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
 # save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
-save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=CDN)
+save(layout, filename=versioned_fn, title="Confirmed Gravitational Lenses — Interactive", resources=INLINE)
